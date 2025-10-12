@@ -1,0 +1,75 @@
+You are an expert full-stack developer specialized in healthcare AI systems. 
+Build a Next.js 14 (App Router) web application called **"MediAssist"**, which helps users in emergency situations find the most suitable hospital based on the patient's condition or disease.
+
+---
+
+## 🏥 Problem Statement:
+In emergency healthcare situations, people often don’t know **which hospital** is best equipped for a particular condition — for example, stroke, cardiac arrest, or trauma. 
+This tool should allow a user to **enter or select a disease/condition** (e.g., "Heart Attack", "Head Injury", "Severe Burn", etc.), and then the system will **suggest nearby hospitals** that specialize in treating that condition, based on available data (mock or real).
+
+The goal: to **save time in emergencies** by giving **smart hospital recommendations** based on the patient's condition.
+
+---
+
+## 🎯 Core Requirements:
+1. Build with **Next.js 14** using the **App Router** structure.
+2. Use **Tailwind CSS** for styling.
+3. Use **OpenAI API** or a mock recommendation system to generate hospital suggestions based on the entered disease or condition.
+4. Use a simple **form** where the user enters the patient’s condition.
+5. On form submit:
+   - If using mock data: display hospitals that match the disease type (cardiac → cardiac hospitals, trauma → trauma centers, etc.).
+   - If using OpenAI API: generate hospital recommendations dynamically with an intelligent description (name, specialization, distance, emergency services availability).
+6. The output should appear as **beautiful responsive cards**, each showing:
+   - Hospital Name
+   - Specialization
+   - Distance (mock data)
+   - Emergency Contact Number
+   - A "Navigate" button (mock Google Maps link)
+7. Add a **loading state** while fetching recommendations.
+8. Create a clean **header** (app name + tagline) and a **footer** with basic info.
+9. Maintain good **component structure** (components folder for UI parts, api folder for API routes).
+10. Bonus: Add a small **map placeholder** (using Leaflet or Google Maps API) showing hospital locations.
+
+---
+
+## 🧩 Example Flow:
+1. User opens the app.
+2. Enters: “Chest pain and difficulty breathing.”
+3. System detects this as a **cardiac emergency**.
+4. Suggests nearby hospitals such as:
+   - Apollo Heart Centre – 2.1 km – 24x7 Cardiac Care
+   - Fortis Emergency Unit – 3.4 km – Advanced Cardiology Dept
+   - CityCare Hospital – 4.7 km – Cardiac Support
+5. User clicks “Navigate” → opens mock Google Maps link.
+
+---
+
+## ⚙️ Technical Notes:
+- Framework: Next.js 14
+- Styling: Tailwind CSS
+- Components: Header, ConditionForm, HospitalCard, Footer
+- Mock data: Array of hospital objects with keys: name, specialization, distance, contact, mapUrl
+- Optionally connect OpenAI API (GPT model) for dynamic recommendation generation based on condition text input.
+
+---
+
+## 💡 Expected Output:
+- A responsive, modern UI for both mobile and desktop.
+- Simple and quick UX for emergencies.
+- Code should be clean, well-commented, and production-ready.
+- Include sample data or mock JSON for testing hospital suggestions.
+
+---
+
+## 🚀 Deliverables:
+- A fully working Next.js app in one project folder.
+- Organized structure:
+  - `/app` folder for pages and API routes
+  - `/components` folder for UI components
+  - `/data/hospitals.js` for mock hospital data
+  - `/styles/globals.css` for Tailwind
+- Include a clear README.md explaining how the app works.
+
+---
+
+Now build this complete Next.js project with the described functionality and mock data so I can test it directly.
