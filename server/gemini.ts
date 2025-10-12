@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
-
+import dotenv from "dotenv";
+dotenv.config();
 // DON'T DELETE THIS COMMENT
 // Follow these instructions when using this blueprint:
 // - Note that the newest Gemini model series is "gemini-2.5-flash" or gemini-2.5-pro"

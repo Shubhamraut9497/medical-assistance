@@ -1,7 +1,9 @@
-import { Phone, MapPin, Navigation, Clock, Ambulance } from "lucide-react";
+import { Phone, MapPin, Navigation, Clock, Ambulance, Star, Shield, Calendar, Image } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
 import type { Hospital } from "@shared/schema";
 
 interface HospitalCardProps {
@@ -21,6 +23,7 @@ const specializationColors: Record<string, string> = {
 
 export function HospitalCard({ hospital, index }: HospitalCardProps) {
   const badgeColor = specializationColors[hospital.specialization] || specializationColors["General"];
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   return (
     <Card 
@@ -37,6 +40,12 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
               <MapPin className="h-3 w-3" />
               {hospital.address}
             </p>
+            {hospital.rating && (
+              <div className="flex items-center gap-1 mt-1">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm font-medium">{hospital.rating}/5</span>
+              </div>
+            )}
           </div>
           <Badge className={`${badgeColor} border font-medium`} data-testid={`badge-specialization-${index}`}>
             {hospital.specialization}
@@ -77,6 +86,26 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
           </div>
         </div>
 
+        {/* Additional Info */}
+        {hospital.emergencyWaitTime && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            <span>Wait time: {hospital.emergencyWaitTime}</span>
+          </div>
+        )}
+
+        {hospital.ambulanceAvailable && (
+          <div className="flex items-center gap-2 text-sm text-emergency">
+            <Ambulance className="h-3 w-3" />
+            <span>Ambulance Available</span>
+            {hospital.ambulanceContact && (
+              <a href={`tel:${hospital.ambulanceContact.replace(/\D/g, '')}`} className="font-medium hover:underline">
+                {hospital.ambulanceContact}
+              </a>
+            )}
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-2 pt-2">
           <Button
             variant="outline"
@@ -100,6 +129,104 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
             </a>
           </Button>
         </div>
+
+        {/* View Details Button */}
+        <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="w-full gap-2">
+              <Image className="h-4 w-4" />
+              View Details
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                {hospital.name} - Details
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Hospital Image */}
+              {hospital.imageUrl && (
+                <div className="aspect-video rounded-lg overflow-hidden">
+                  <img 
+                    src={hospital.imageUrl} 
+                    alt={hospital.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              {/* Description */}
+              {hospital.description && (
+                <div>
+                  <h4 className="font-semibold mb-2">About</h4>
+                  <p className="text-muted-foreground">{hospital.description}</p>
+                </div>
+              )}
+
+              {/* Facilities */}
+              {hospital.facilities && hospital.facilities.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-2">Facilities</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {hospital.facilities.map((facility, idx) => (
+                      <Badge key={idx} variant="secondary" className="text-xs">
+                        {facility}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Insurance Accepted */}
+              {hospital.insuranceAccepted && hospital.insuranceAccepted.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-2">Insurance Accepted</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {hospital.insuranceAccepted.map((insurance, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {insurance}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Visiting Hours */}
+              {hospital.visitingHours && (
+                <div>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Visiting Hours
+                  </h4>
+                  <p className="text-muted-foreground">{hospital.visitingHours}</p>
+                </div>
+              )}
+
+              {/* Contact Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                <div>
+                  <h4 className="font-semibold mb-2">Contact</h4>
+                  <p className="text-muted-foreground flex items-center gap-2">
+                    <Phone className="h-4 w-4" />
+                    {hospital.contactNumber}
+                  </p>
+                </div>
+                {hospital.ambulanceContact && (
+                  <div>
+                    <h4 className="font-semibold mb-2">Ambulance</h4>
+                    <p className="text-muted-foreground flex items-center gap-2">
+                      <Ambulance className="h-4 w-4" />
+                      {hospital.ambulanceContact}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <div className="pt-2 border-t">
           <p className="text-sm text-muted-foreground flex items-center gap-2">

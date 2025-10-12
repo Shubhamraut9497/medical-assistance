@@ -1,8 +1,10 @@
+import dotenv from "dotenv";
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
 import * as schema from "@shared/schema";
 
+dotenv.config(); // 👈 add this line before anything that uses process.env
 neonConfig.webSocketConstructor = ws;
 
 if (!process.env.DATABASE_URL) {

@@ -5,28 +5,41 @@ import { ConditionForm } from "@/components/condition-form";
 import { HospitalCard } from "@/components/hospital-card";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { AnalysisSummary } from "@/components/analysis-summary";
+import { DiseaseInfo } from "@/components/disease-info";
 import { Footer } from "@/components/footer";
 import { useToast } from "@/hooks/use-toast";
+import { useGeolocation } from "@/hooks/use-geolocation";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { AnalyzeConditionResponse } from "@shared/schema";
-import { Activity, Sparkles, Info } from "lucide-react";
+import { Activity, Sparkles, Info, Ambulance, MapPin, Clock } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [hasSearched, setHasSearched] = useState(false);
   const { toast } = useToast();
+  const { latitude, longitude, error: locationError, loading: locationLoading } = useGeolocation();
 
   const analyzeMutation = useMutation({
     mutationFn: async (condition: string) => {
-      const response = await apiRequest<AnalyzeConditionResponse>(
+      const userLocation = latitude && longitude ? {
+        latitude,
+        longitude,
+        address: `Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`
+      } : undefined;
+
+      const response = await apiRequest(
         "POST",
         "/api/analyze-condition",
-        { condition }
+        { condition, userLocation }
       );
-      return response;
+      return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setHasSearched(true);
-      queryClient.invalidateQueries({ queryKey: ["/api/latest-analysis"] });
+      // Store the analysis result directly in the query cache
+      queryClient.setQueryData(["/api/latest-analysis"], data);
     },
     onError: (error: Error) => {
       toast({
@@ -89,6 +102,107 @@ export default function Home() {
                 <AnalysisSummary analysis={latestAnalysis.analysis} />
               </div>
             </section>
+
+            {/* Disease Information */}
+            {latestAnalysis.diseaseInfo && (
+              <section className="py-8 px-4 md:px-6">
+                <div className="container mx-auto max-w-7xl">
+                  <div className="mb-6">
+                    <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">
+                      Disease Information
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Important information about {latestAnalysis.diseaseInfo.name}
+                    </p>
+                  </div>
+                  <DiseaseInfo disease={latestAnalysis.diseaseInfo} />
+                </div>
+              </section>
+            )}
+
+            {/* Nearby Ambulances */}
+            {latestAnalysis.nearbyAmbulances && latestAnalysis.nearbyAmbulances.length > 0 && (
+              <section className="py-8 px-4 md:px-6 bg-muted/30">
+                <div className="container mx-auto max-w-7xl">
+                  <div className="mb-6">
+                    <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">
+                      Nearby Ambulances
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Available emergency services in your area
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {latestAnalysis.nearbyAmbulances.map((ambulance, index) => (
+                      <Card key={ambulance.id} className="border-2">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Ambulance className="h-5 w-5 text-emergency" />
+                              <h3 className="text-lg font-semibold">Ambulance {index + 1}</h3>
+                            </div>
+                            <Badge variant={ambulance.available ? "default" : "secondary"}>
+                              {ambulance.available ? "Available" : "Busy"}
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Clock className="h-4 w-4 text-muted-foreground" />
+                            <span>ETA: {ambulance.estimatedTime}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                            <span>Nearby Location</span>
+                          </div>
+                          <Button 
+                            className="w-full gap-2" 
+                            variant={ambulance.available ? "default" : "outline"}
+                            disabled={!ambulance.available}
+                            asChild
+                          >
+                            <a href={`tel:${ambulance.contact.replace(/\D/g, '')}`}>
+                              <Ambulance className="h-4 w-4" />
+                              Call Ambulance
+                            </a>
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* User Location */}
+            {latestAnalysis.userLocation && (
+              <section className="py-8 px-4 md:px-6">
+                <div className="container mx-auto max-w-7xl">
+                  <div className="mb-6">
+                    <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">
+                      Your Location
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Current location for distance calculations
+                    </p>
+                  </div>
+                  <Card className="border-2">
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-2 text-lg">
+                        <MapPin className="h-5 w-5 text-primary" />
+                        <span>{latestAnalysis.userLocation.address}</span>
+                      </div>
+                      {latestAnalysis.estimatedArrivalTime && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                          <Clock className="h-4 w-4" />
+                          <span>Estimated arrival time: {latestAnalysis.estimatedArrivalTime}</span>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </section>
+            )}
 
             <section className="py-8 px-4 md:px-6">
               <div className="container mx-auto max-w-7xl">

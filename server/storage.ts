@@ -2,12 +2,15 @@ import {
   hospitals,
   conditionAnalyses,
   progressAnalyses,
+  diseases,
   type Hospital,
   type InsertHospital,
   type ConditionAnalysis,
   type InsertConditionAnalysis,
   type ProgressAnalysis,
-  type InsertProgressAnalysis
+  type InsertProgressAnalysis,
+  type Disease,
+  type InsertDisease
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -19,6 +22,8 @@ export interface IStorage {
   getHospitalsBySpecializations(specializations: string[]): Promise<Hospital[]>;
   getHospitalsByIds(ids: string[]): Promise<Hospital[]>;
   createHospital(hospital: InsertHospital): Promise<Hospital>;
+  getHospitalsWithAmbulance(): Promise<Hospital[]>;
+  getHospitalsNearby(latitude: number, longitude: number, radiusKm: number): Promise<Hospital[]>;
 
   // Condition Analyses
   createConditionAnalysis(analysis: InsertConditionAnalysis): Promise<ConditionAnalysis>;
@@ -29,6 +34,12 @@ export interface IStorage {
   createProgressAnalysis(progress: InsertProgressAnalysis): Promise<ProgressAnalysis>;
   getProgressByAnalysisId(analysisId: string): Promise<ProgressAnalysis | undefined>;
   getAllProgressAnalyses(): Promise<ProgressAnalysis[]>;
+
+  // Diseases
+  getAllDiseases(): Promise<Disease[]>;
+  getDiseaseByName(name: string): Promise<Disease | undefined>;
+  getDiseasesByCategory(category: string): Promise<Disease[]>;
+  createDisease(disease: InsertDisease): Promise<Disease>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -109,6 +120,51 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(progressAnalyses)
       .orderBy(desc(progressAnalyses.createdAt));
+  }
+
+  // New methods for enhanced features
+  async getHospitalsWithAmbulance(): Promise<Hospital[]> {
+    return await db
+      .select()
+      .from(hospitals)
+      .where(eq(hospitals.ambulanceAvailable, true));
+  }
+
+  async getHospitalsNearby(latitude: number, longitude: number, radiusKm: number): Promise<Hospital[]> {
+    // For now, return all hospitals. In production, implement proper geospatial query
+    const allHospitals = await db.select().from(hospitals);
+    return allHospitals; // Simplified for demo
+  }
+
+  // Diseases
+  async getAllDiseases(): Promise<Disease[]> {
+    return await db
+      .select()
+      .from(diseases)
+      .orderBy(desc(diseases.createdAt));
+  }
+
+  async getDiseaseByName(name: string): Promise<Disease | undefined> {
+    const [disease] = await db
+      .select()
+      .from(diseases)
+      .where(eq(diseases.name, name));
+    return disease || undefined;
+  }
+
+  async getDiseasesByCategory(category: string): Promise<Disease[]> {
+    return await db
+      .select()
+      .from(diseases)
+      .where(eq(diseases.category, category));
+  }
+
+  async createDisease(disease: InsertDisease): Promise<Disease> {
+    const [newDisease] = await db
+      .insert(diseases)
+      .values(disease)
+      .returning();
+    return newDisease;
   }
 }
 
