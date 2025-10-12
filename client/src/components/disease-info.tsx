@@ -95,6 +95,21 @@ export function DiseaseInfo({ disease }: DiseaseInfoProps) {
           <p className="text-muted-foreground">{disease.prevention}</p>
         </div>
 
+        {/* Disease Image */}
+        {disease.imageUrl && (
+          <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+            <img 
+              src={disease.imageUrl} 
+              alt={disease.name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
+            />
+          </div>
+        )}
+
         {/* Emergency Actions */}
         <div className="pt-4 border-t">
           <div className="flex gap-2">

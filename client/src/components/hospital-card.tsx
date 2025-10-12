@@ -148,15 +148,17 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
             
             <div className="space-y-6">
               {/* Hospital Image */}
-              {hospital.imageUrl && (
-                <div className="aspect-video rounded-lg overflow-hidden">
-                  <img 
-                    src={hospital.imageUrl} 
-                    alt={hospital.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
+              <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+                <img 
+                  src={hospital.imageUrl || `https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&auto=format&q=80`} 
+                  alt={hospital.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&auto=format&q=80`;
+                  }}
+                />
+              </div>
 
               {/* Description */}
               {hospital.description && (

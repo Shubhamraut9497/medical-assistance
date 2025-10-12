@@ -14,7 +14,7 @@ const hospitalData = [
     available: true,
     latitude: "40.7128",
     longitude: "-74.0060",
-    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&auto=format&q=80",
     rating: 5,
     description: "Leading cardiac care center with state-of-the-art facilities and expert cardiologists.",
     ambulanceAvailable: true,
@@ -231,7 +231,7 @@ const diseaseData = [
     prevention: "Maintain a healthy diet, exercise regularly, avoid smoking, manage stress, and control blood pressure and cholesterol.",
     relatedSpecializations: ["Cardiac", "General"],
     emergencyLevel: 5,
-    imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&auto=format&q=80",
   },
   {
     name: "Stroke",
@@ -244,7 +244,7 @@ const diseaseData = [
     prevention: "Control blood pressure, manage diabetes, quit smoking, exercise regularly, and maintain a healthy diet.",
     relatedSpecializations: ["Neurological", "General"],
     emergencyLevel: 5,
-    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba0ef41?w=400&h=300&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba0ef41?w=400&h=300&fit=crop&auto=format&q=80",
   },
   {
     name: "Respiratory Emergency",
@@ -257,7 +257,7 @@ const diseaseData = [
     prevention: "Avoid triggers, take prescribed medications, get flu vaccines, and avoid smoking.",
     relatedSpecializations: ["Respiratory", "General"],
     emergencyLevel: 4,
-    imageUrl: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=300&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=300&fit=crop&auto=format&q=80",
   },
   {
     name: "Trauma",
@@ -270,7 +270,7 @@ const diseaseData = [
     prevention: "Wear seatbelts, use safety equipment, avoid risky behaviors, and maintain safe environments.",
     relatedSpecializations: ["Trauma", "General"],
     emergencyLevel: 5,
-    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&auto=format&q=80",
   },
   {
     name: "Burn Injury",
@@ -283,7 +283,7 @@ const diseaseData = [
     prevention: "Use proper safety equipment, keep hot objects away from children, and install smoke detectors.",
     relatedSpecializations: ["Burn", "General"],
     emergencyLevel: 3,
-    imageUrl: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop&auto=format&q=80",
   },
   {
     name: "Fracture",
@@ -296,7 +296,7 @@ const diseaseData = [
     prevention: "Maintain bone health with calcium and vitamin D, exercise regularly, and use protective equipment during sports.",
     relatedSpecializations: ["Orthopedic", "General"],
     emergencyLevel: 3,
-    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&auto=format&q=80",
   },
 ];
 
